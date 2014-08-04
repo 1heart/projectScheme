@@ -332,6 +332,7 @@ def do_quote_form(vals, env):
     """Evaluate a quote form with parameters VALS. ENV is ignored."""
     check_form(vals, 1, 1)
     "*** YOUR CODE HERE ***"
+    return vals.first, env.parent
 
 
 def do_begin_form(vals, env):
@@ -456,7 +457,6 @@ SPECIAL_FORMS = {
 
 # Utility methods for checking the structure of Scheme programs
 
-# @trace
 def check_form(expr, min, max = None):
     """Check EXPR (default SELF.expr) is a proper list whose length is
     at least MIN and no more than MAX (default: no maximum). Raises
