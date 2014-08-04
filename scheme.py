@@ -216,7 +216,12 @@ class PrimitiveProcedure(Procedure):
         """
         arg_list = list(args)
         "*** YOUR CODE HERE ***"
-
+        try:
+            if self.use_env == True:
+                arg_list.append(env)
+            return self.fn(*arg_list), None
+        except TypeError:
+            raise SchemeError("try again kiddo")
 
 class LambdaProcedure(Procedure):
     """A procedure defined by a lambda expression or the complex define form."""
