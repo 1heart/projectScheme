@@ -23,7 +23,7 @@ from buffer import Buffer, InputReader, LineReader
 # Scheme list Parser
 
 
-def scheme_read(src):
+def scheme_read(src): #aka read_exp from calculator
     """Read the next expression from SRC, a Buffer of tokens.
 
     >>> lines = ["(+ 1 ", "(+ 23 4)) ("]
@@ -55,7 +55,7 @@ def scheme_read(src):
     else:
         raise SyntaxError("unexpected token: {0}".format(val))
 
-def read_tail(src):
+def read_tail(src): #aka read_until_close from calculator
 	"""Return the remainder of a list in SRC, starting before an element or ).
 
 	>>> read_tail(Buffer(tokenize_lines([")"])))
@@ -93,7 +93,6 @@ def read_tail(src):
 		else:
 			first = scheme_read(src)
 			rest = read_tail(src)
-			print(first, rest)
 			return Pair(first, rest)
 	except EOFError:
 		raise SyntaxError("unexpected end of file")

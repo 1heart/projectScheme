@@ -102,6 +102,11 @@ class Frame:
         if type(symbol) is str:
             symbol = intern(symbol)
         "*** YOUR CODE HERE ***"
+        if symbol in self.bindings:
+        	return self.bindings[symbol]
+        else:
+        	if self.parent:
+        		return self.parent.lookup(symbol)
         raise SchemeError("unknown identifier: {0}".format(str(symbol)))
 
 
@@ -451,6 +456,7 @@ SPECIAL_FORMS = {
 
 # Utility methods for checking the structure of Scheme programs
 
+# @trace
 def check_form(expr, min, max = None):
     """Check EXPR (default SELF.expr) is a proper list whose length is
     at least MIN and no more than MAX (default: no maximum). Raises

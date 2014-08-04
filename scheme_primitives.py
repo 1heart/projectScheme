@@ -593,7 +593,7 @@ class Pair(SchemeValue):
     def __len__(self):
         if not self._list_end().nullp():
             raise SchemeError("length attempted on improper list")
-        n, second = 0, self.second
+        n, second = 1, self.second
         while second.pairp():
             n += 1
             second = second.second
