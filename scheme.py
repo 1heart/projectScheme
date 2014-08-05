@@ -325,6 +325,7 @@ def do_define_form(vals, env):
         return target, None
     elif scheme_pairp(target):
         "*** YOUR CODE HERE ***"
+        
     else:
         raise SchemeError("bad argument to define")
 
@@ -341,6 +342,9 @@ def do_begin_form(vals, env):
     if scheme_nullp(vals):
         return okay, None
     "*** YOUR CODE HERE ***"
+    for i in range(len(vals)-1):
+    	scheme_eval(vals[i], env)
+    return (vals[len(vals)-1]), env
 
 def do_lambda_form(vals, env, function_type=LambdaProcedure):
     """Evaluate a lambda form with formals VALS[0] and body VALS.second
@@ -350,6 +354,11 @@ def do_lambda_form(vals, env, function_type=LambdaProcedure):
     formals = vals[0]
     check_formals(formals)
     "*** YOUR CODE HERE ***"
+    body = vals.second.first
+    print(body, len(vals.second))
+    if len(vals.second) > 1:
+    	return LambdaProcedure(formals, Pair('begin', (vals.second)), env), env
+    return LambdaProcedure(formals, body, env), env
 
 def do_mu_form(vals, env):
     """Evaluate a mu (dynamically scoped lambda) form with formals VALS[0]
