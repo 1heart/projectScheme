@@ -129,7 +129,14 @@ class Frame:
         <{a: 1, b: 2, c: 3} -> <Global Frame>>
         """
         frame = Frame(self)
+
         "*** YOUR CODE HERE ***"
+
+        while len(formals) != 0 and len(vals) != 0:
+        	self.bindings[formals.first] = vals.first
+        	formals, vals = formals.second, vals.second
+        if len(formals) != 0 or len(vals) != 0:
+        	raise SchemeError("Wrong number of parameters and arguments")
         return frame
 
     def define(self, sym, val):
@@ -325,7 +332,14 @@ def do_define_form(vals, env):
         return target, None
     elif scheme_pairp(target):
         "*** YOUR CODE HERE ***"
-        
+        name = vals[0].first
+        if name.symbolp() == scheme_false:
+        	raise SchemeError("bad argument to define")
+        target = vals[0].second
+        value = vals.second
+        rv = Pair(target, value)
+        env.define(name, do_lambda_form(rv, env)[0])
+        return name, None
     else:
         raise SchemeError("bad argument to define")
 
@@ -355,10 +369,10 @@ def do_lambda_form(vals, env, function_type=LambdaProcedure):
     check_formals(formals)
     "*** YOUR CODE HERE ***"
     body = vals.second.first
-    print(body, len(vals.second))
+    # print(vals.second)
     if len(vals.second) > 1:
-    	return LambdaProcedure(formals, Pair('begin', (vals.second)), env), env
-    return LambdaProcedure(formals, body, env), env
+    	return function_type(formals, Pair('begin', (vals.second)), env), env
+    return function_type(formals, body, env), env
 
 def do_mu_form(vals, env):
     """Evaluate a mu (dynamically scoped lambda) form with formals VALS[0]
