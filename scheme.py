@@ -500,6 +500,14 @@ def check_formals(formals):
     >>> check_formals(read_line("(a b c)"))
     """
     "*** YOUR CODE HERE ***"
+    checker = []
+    for i in range(len(formals)):
+        if formals[i] in checker:
+            raise SchemeError('symbol used twice')
+        checker.append(formals[i])
+        if not scheme_symbolp(formals[i]):
+            raise SchemeError('not a symbol')
+    return formals
 
 ################
 # Input/Output #
