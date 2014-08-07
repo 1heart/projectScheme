@@ -160,6 +160,18 @@
 (tree-sums tree)
 ; expect (20 19 13 16 11)
 
+;display-stream, updated from website
+(define (display-stream s n)
+  (define (display-line x)
+    (display x)
+    (newline))
+  (define (stream-for-each proc s n)
+    (cond ((stream-null? s) 'done)
+          ((= n 0) '___done)
+          (else (begin (proc (stream-car s))
+                (stream-for-each proc (stream-cdr s) (- n 1))))))
+  (stream-for-each display-line s n))
+
 
 
 ; Problem 23 (optional)
@@ -168,3 +180,5 @@
 (define (hax d k)
   ; YOUR CODE HERE
   nil)
+
+

@@ -161,6 +161,8 @@ class Stream(SchemeValue):
         self.first = first
         self._compute_rest = rest
         self.env = env
+    def _symbol(self):
+    	return 'stream'
 
     def stream_car(self):
         """Gets the first item of a stream"""
@@ -191,6 +193,7 @@ def do_cons_stream_form(vals, env):
     stream"""
     check_form(vals, 2, 2)
     "*** YOUR CODE HERE ***"
+    return Stream(vals[0], vals.second, env), env
 
 ##############
 # Procedures #
