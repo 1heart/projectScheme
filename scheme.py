@@ -266,6 +266,7 @@ class LambdaProcedure(Procedure):
                self.body == other.body and \
                self.env == other.env
 
+    @trace
     def apply(self, args, env):
         if proper_tail_recursion:
             # Implemented in Question 22.
@@ -273,8 +274,8 @@ class LambdaProcedure(Procedure):
         else:
             "*** YOUR CODE HERE ***"
             f = env.make_call_frame(self.formals, args) 
-            rv = scheme_eval(self.body, f)
-            return rv, env
+            rv = scheme_eval(self.body, f.parent)
+            return rv, None
 
 
 class MuProcedure(LambdaProcedure):
@@ -417,6 +418,15 @@ def do_if_form(vals, env):
     """Evaluate if form with parameters VALS in environment ENV."""
     check_form(vals, 2, 3)
     "*** YOUR CODE HERE ***"
+    if len(vals) == 2:
+    	if vals[0] != scheme_false:
+    		return scheme_eval(vals[1], env), env
+    	return okay, env
+    if vals[0] != scheme_false:
+    	print(repr(vals[1]))
+    	print(repr(scheme_eval(vals[1], env)))
+    	return scheme_eval(vals[1], None), env
+    return scheme_eval(vals[2], None), env
 
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
@@ -442,6 +452,8 @@ def do_cond_form(vals, env):
             test = scheme_eval(clause.first, env)
         if test:
             "*** YOUR CODE HERE ***"
+            print(scheme_eval(clause.second.first, env))
+            return scheme_eval(clause.second.first, env), None
     return okay, None
 
 # Collected symbols with significance to the interpreter
