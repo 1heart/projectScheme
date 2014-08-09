@@ -47,8 +47,14 @@
 ;; Merge two lists LIST1 and LIST2 according to COMP and return
 ;; the merged lists.
 (define (merge comp list1 list2)
-  ; YOUR CODE HERE
-  nil)
+  (cond 
+    ((and (null? list1) (null? list2)) nil)
+    ((null? list1) list2)
+    ((null? list2) list1)
+    ((comp (car list1) (car list2)) 
+      (cons (car list1) (merge comp (cdr list1) list2))  )
+    (else (cons (car list2) (merge comp list1 (cdr list2))))
+    ))
 
 (merge < '(1 5 7 9) '(4 8 10))
 ; expect (1 4 5 7 8 9 10)
@@ -87,8 +93,22 @@
 ;; A stream that computes all possible patterns, each of which contain at least
 ;; one OVER and one UNDER
 (define (patterns)
-  ; YOUR CODE HERE
-  the-empty-stream)
+
+(cons-stream
+
+
+
+  ()
+
+
+  ()
+
+  )
+
+
+
+
+  )
 
 ; Gets the first N items out of stream of patterns into a
 ; list and sees if items are valid patterns
