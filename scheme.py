@@ -272,7 +272,6 @@ class LambdaProcedure(Procedure):
                self.body == other.body and \
                self.env == other.env
 
-    @trace
     def apply(self, args, env):
         if proper_tail_recursion:
             # Implemented in Question 22.
@@ -414,6 +413,21 @@ def do_let_form(vals, env):
         values = Pair(val, values)
     check_formals(names)
     "*** YOUR CODE HERE ***"
+    print('Names: {0}, Values: {2}, Exprs: {1}'.format(names, exprs, values))
+    prcdr = do_lambda_form(Pair(names, exprs), env)
+    print(prcdr)
+    for value in values:
+    	value = eval("""value""")
+    print(values)
+
+
+
+    # print('LOLOLOL',names, values)
+    # print(vals.second)
+    # the_procedure = do_lambda_form(Pair(names, vals.second), env)
+    # f, e = the_procedure[0], the_procedure[1]
+    # print(f, e)
+    # return f.apply(values, e)
 
 
 #########################
@@ -472,8 +486,14 @@ def do_cond_form(vals, env):
             test = scheme_eval(clause.first, env)
         if test:
             "*** YOUR CODE HERE ***"
-            print(scheme_eval(clause.second.first, env))
-            return scheme_eval(clause.second.first, env), None
+            print (test, i, clause)
+            rv = clause.second
+            if len(rv) == 0:
+            	return scheme_true, None
+            if len(rv) > 1:
+            	rv = do_begin_form(rv, None)[0]
+            	return scheme_eval(rv, None), env
+            return scheme_eval(rv[0], None), env
     return okay, None
 
 # Collected symbols with significance to the interpreter

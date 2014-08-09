@@ -8,6 +8,9 @@
 
 ;;; *** Add more of your own here! ***
 
+(let ((x 42)) x 1 2)
+; expect 2
+
 ;;; These are examples from several sections of "The Structure
 ;;; and Interpretation of Computer Programs" by Abelson and Sussman.
 
