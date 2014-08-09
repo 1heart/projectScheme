@@ -174,6 +174,8 @@ class Stream(SchemeValue):
         """
         if self._compute_rest is not None:
             "*** YOUR CODE HERE ***"
+            self.rest = scheme_eval(self._compute_rest.first, self.env)
+            self._compute_rest = None
         return self.rest
 
     def __str__(self):
@@ -193,7 +195,8 @@ def do_cons_stream_form(vals, env):
     stream"""
     check_form(vals, 2, 2)
     "*** YOUR CODE HERE ***"
-    return Stream(vals[0], vals.second, env), env
+    f = scheme_eval(vals.first, env)
+    return Stream(f, vals.second, env), env
 
 ##############
 # Procedures #
