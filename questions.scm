@@ -174,8 +174,29 @@
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
 (define (tree-sums tree)
-  ; YOUR CODE HERE
-  nil)
+  (cond
+    ((null? (children tree))  (list (entry tree)))
+    (else
+      (define (app lst) (map (lambda x (+ x (entry tree))) lst))
+    (define r (map tree-sums (children tree)))
+    (display r)
+    (map app r)
+
+
+    )
+
+
+
+
+
+    )
+  )
+
+
+      (define (app lst) (map (lambda x (+ x 2)) lst))
+
+(define tree2
+(make-tree 2 (list (make-tree 6 nil))))
 
 (tree-sums tree)
 ; expect (20 19 13 16 11)

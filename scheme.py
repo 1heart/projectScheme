@@ -278,7 +278,7 @@ class LambdaProcedure(Procedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
-            f = env.make_call_frame(self.formals, args) 
+            f = self.env.make_call_frame(self.formals, args) 
             rv = scheme_eval(self.body, f.parent)
             return rv, None
 
@@ -304,6 +304,10 @@ class MuProcedure(LambdaProcedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
+            f = env.make_call_frame(self.formals, args) 
+            rv = scheme_eval(self.body, f.parent)
+            return rv, None
+
 
 # Call-by-name (nu) extension.
 class NuProcedure(LambdaProcedure):
@@ -413,12 +417,14 @@ def do_let_form(vals, env):
         values = Pair(val, values)
     check_formals(names)
     "*** YOUR CODE HERE ***"
-    print('Names: {0}, Values: {2}, Exprs: {1}'.format(names, exprs, values))
-    prcdr = do_lambda_form(Pair(names, exprs), env)
-    print(prcdr)
+    prcdr = do_lambda_form(Pair(names, exprs), env)[0] ##lambda form
+    curr = []##we're going to evaluate each argument and put it into this list
     for value in values:
-    	value = eval("""value""")
-    print(values)
+    	curr.append(scheme_eval(value, env))
+    new = nil##you gotta reverse curr :(
+    for i in curr[::-1]:
+    	new = Pair(i, new)
+    return prcdr.apply(new, env)
 
 
 
@@ -486,7 +492,6 @@ def do_cond_form(vals, env):
             test = scheme_eval(clause.first, env)
         if test:
             "*** YOUR CODE HERE ***"
-            print (test, i, clause)
             rv = clause.second
             if len(rv) == 0:
             	return scheme_true, None
