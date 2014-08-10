@@ -61,16 +61,9 @@
 
 ;; Merge two lists LIST1 and LIST2 according to COMP and return
 ;; the merged lists.
-
 (define (merge comp list1 list2)
-  (cond 
-    ((and (null? list1) (null? list2)) nil)
-    ((null? list1) list2)
-    ((null? list2) list1)
-    ((comp (car list1) (car list2)) 
-      (cons (car list1) (merge comp (cdr list1) list2))  )
-    (else (cons (car list2) (merge comp list1 (cdr list2))))
-    ))
+  ; YOUR CODE HERE
+  nil)
 
 (merge < '(1 5 7 9) '(4 8 10))
 ; expect (1 4 5 7 8 9 10)
@@ -173,26 +166,11 @@
                                             (make-tree 3 nil)))
                               (make-tree 4 nil))))))
 
-
-(define (flatten deeplst) 
-  (cond
-    ((null? deeplst) ())
-    ((pair? (car deeplst)) (append (flatten (car deeplst))  (flatten (cdr deeplst)) ))
-    (else (cons (car deeplst) (flatten (cdr deeplst))))))
-
-
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
-
-(define (tree-sums tree)  
-  (cond
-    ((null? (children tree))  (list (entry tree)))
-    (else
-      (define ent (entry tree))
-      (define (app lst) (map (lambda (x) (+ x ent)) lst))
-    (define r (map tree-sums (children tree)))
-    (define rv (flatten r))
-    (app rv))))
+(define (tree-sums tree)
+  ; YOUR CODE HERE
+  nil)
 
 (tree-sums tree)
 ; expect (20 19 13 16 11)
