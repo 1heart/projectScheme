@@ -92,51 +92,51 @@
 
 ;; A stream that computes all possible patterns, each of which contain at least
 ;; one OVER and one UNDER
-(define (patterns)
+; (define (patterns)
 
-(cons-stream
-
-
-
-  ()
-
-
-  ()
-
-  )
+; (cons-stream
 
 
 
+;   ()
 
-  )
 
-; Gets the first N items out of stream of patterns into a
-; list and sees if items are valid patterns
-(define (test-pattern stream-pattern n)
-    (cond ((stream-null? stream-pattern) the-empty-stream) 
-        ((equal? n 1) (list (stream-car stream-pattern)))
-        ((and (member? 'over (stream-car stream-pattern))
-            (member? 'under (stream-car stream-pattern)))
-                (cons (stream-car stream-pattern)
-                    (test-pattern (stream-cdr stream-pattern) (- n 1))))
-       (else the-empty-stream)))
+;   ()
 
-; True if ss2 contains all elements of ss1
-(define (sol-contains-all ss1 ss2)
-    (or (null? ss1)
-        (and (member? (car ss1) ss2)
-          (sol-contains-all (cdr ss1) ss2))))
+;   )
 
-;; Gets first 8 items out of patterns. Stops if any item in patterns is not valid.
-(define pattern-lst (test-pattern (patterns) 8))
 
-;; Create a list that contains patterns that do happen in the first 8 items of pattern
-(define lst '((under over) (over under) (under over over) (over under over) (over over under) 
-  (under over under) (under under over)))
 
-;; Checks pattern-list contains the first 8 patterns
-(and (equal? (length pattern-lst) 8) (sol-contains-all lst pattern-lst))
-; expect #t
+
+;   )
+
+; ; Gets the first N items out of stream of patterns into a
+; ; list and sees if items are valid patterns
+; (define (test-pattern stream-pattern n)
+;     (cond ((stream-null? stream-pattern) the-empty-stream) 
+;         ((equal? n 1) (list (stream-car stream-pattern)))
+;         ((and (member? 'over (stream-car stream-pattern))
+;             (member? 'under (stream-car stream-pattern)))
+;                 (cons (stream-car stream-pattern)
+;                     (test-pattern (stream-cdr stream-pattern) (- n 1))))
+;        (else the-empty-stream)))
+
+; ; True if ss2 contains all elements of ss1
+; (define (sol-contains-all ss1 ss2)
+;     (or (null? ss1)
+;         (and (member? (car ss1) ss2)
+;           (sol-contains-all (cdr ss1) ss2))))
+
+; ;; Gets first 8 items out of patterns. Stops if any item in patterns is not valid.
+; (define pattern-lst (test-pattern (patterns) 8))
+
+; ;; Create a list that contains patterns that do happen in the first 8 items of pattern
+; (define lst '((under over) (over under) (under over over) (over under over) (over over under) 
+;   (under over under) (under under over)))
+
+; ;; Checks pattern-list contains the first 8 patterns
+; (and (equal? (length pattern-lst) 8) (sol-contains-all lst pattern-lst))
+; ; expect #t
 
 ; Problem 22
 
@@ -159,6 +159,7 @@
 ;;                      |
 ;;                      |
 ;;                      3
+
 (define tree
   (make-tree 5 (list
                 (make-tree 6 (list
@@ -173,53 +174,50 @@
 
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
-(define (tree-sums tree)
+
+
+(define (flatten deeplst) 
+
+(cond
+
+((null? deeplst) ())
+((pair? (car deeplst)) (append (flatten (car deeplst))  (flatten (cdr deeplst)) ))
+(else (cons (car deeplst) (flatten (cdr deeplst))))))
+
+; (flatten '((1 2 3) (4 5 6) (7 8 9)))
+; expect (1 2 3 4 5 6 7 8 9)
+
+
+(define (tree-sums tree)  
   (cond
     ((null? (children tree))  (list (entry tree)))
     (else
-      (define (app lst) (map (lambda x (+ x (entry tree))) lst))
+      (define ent (entry tree))
+      (define (app lst) (map (lambda (x) (+ x ent)) lst))
     (define r (map tree-sums (children tree)))
-    (display r)
-    (map app r)
-
-
-    )
-
-
-
-
-
-    )
-  )
-
-
-      (define (app lst) (map (lambda x (+ x 2)) lst))
-
-(define tree2
-(make-tree 2 (list (make-tree 6 nil))))
-
-(tree-sums tree)
+    (define rv (flatten r))
+    (app rv))))
+ ; (tree-sums tree)
 ; expect (20 19 13 16 11)
 
-;display-stream, updated from website
-(define (display-stream s n)
-  (define (display-line x)
-    (display x)
-    (newline))
-  (define (stream-for-each proc s n)
-    (cond ((stream-null? s) 'done)
-          ((= n 0) '___done)
-          (else (begin (proc (stream-car s))
-                (stream-for-each proc (stream-cdr s) (- n 1))))))
-  (stream-for-each display-line s n))
+; ;display-stream, updated from website
+; (define (display-stream s n)
+;   (define (display-line x)
+;     (display x)
+;     (newline))
+;   (define (stream-for-each proc s n)
+;     (cond ((stream-null? s) 'done)
+;           ((= n 0) '___done)
+;           (else (begin (proc (stream-car s))
+;                 (stream-for-each proc (stream-cdr s) (- n 1))))))
+;   (stream-for-each display-line s n))
 
 
 
 ; Problem 23 (optional)
 
 ; Draw the hax image using turtle graphics.
-(define (hax d k)
-  ; YOUR CODE HERE
-  nil)
+; (define (hax d k)
+;   )
 
 

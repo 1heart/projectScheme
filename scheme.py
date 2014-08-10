@@ -9,7 +9,7 @@ from ucb import main, trace
 # Eval/Apply #
 ##############
 
-
+# @trace
 def scheme_eval(expr, env):
     """Evaluate Scheme expression EXPR in environment ENV. If ENV is None,
     simply returns EXPR as its value without further evaluation.
@@ -133,7 +133,7 @@ class Frame:
         "*** YOUR CODE HERE ***"
 
         while len(formals) != 0 and len(vals) != 0:
-        	self.bindings[formals.first] = vals.first
+        	frame.bindings[formals.first] = vals.first
         	formals, vals = formals.second, vals.second
         if len(formals) != 0 or len(vals) != 0:
         	raise SchemeError("Wrong number of parameters and arguments")
@@ -279,7 +279,7 @@ class LambdaProcedure(Procedure):
         else:
             "*** YOUR CODE HERE ***"
             f = self.env.make_call_frame(self.formals, args) 
-            rv = scheme_eval(self.body, f.parent)
+            rv = scheme_eval(self.body, f)
             return rv, None
 
 
@@ -304,8 +304,10 @@ class MuProcedure(LambdaProcedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
-            f = env.make_call_frame(self.formals, args) 
-            rv = scheme_eval(self.body, f.parent)
+            print(env)
+            f = env.make_call_frame(self.formals, args)
+            print(f)
+            rv = scheme_eval(self.body, f)
             return rv, None
 
 
