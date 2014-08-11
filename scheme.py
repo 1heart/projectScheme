@@ -304,7 +304,9 @@ class MuProcedure(LambdaProcedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
+            print(env)
             f = env.make_call_frame(self.formals, args)
+            print(f)
             rv = scheme_eval(self.body, f)
             return rv, None
 
@@ -383,6 +385,7 @@ def do_lambda_form(vals, env, function_type=LambdaProcedure):
     check_formals(formals)
     "*** YOUR CODE HERE ***"
     body = vals.second.first
+    # print(vals.second)
     if len(vals.second) > 1:
     	return function_type(formals, Pair('begin', (vals.second)), env), env
     return function_type(formals, body, env), env
@@ -427,6 +430,14 @@ def do_let_form(vals, env):
 
 
 
+    # print('LOLOLOL',names, values)
+    # print(vals.second)
+    # the_procedure = do_lambda_form(Pair(names, vals.second), env)
+    # f, e = the_procedure[0], the_procedure[1]
+    # print(f, e)
+    # return f.apply(values, e)
+
+
 #########################
 # Logical Special Forms #
 #########################
@@ -436,12 +447,14 @@ def do_if_form(vals, env):
     check_form(vals, 2, 3)
     "*** YOUR CODE HERE ***"
     if len(vals) == 2:
-    	if scheme_eval(vals[0], env) != scheme_false:
-    		return scheme_eval(vals[1], env), None
-    	return okay, None
-    if scheme_eval(vals[0], env) != scheme_false:
-    	return scheme_eval(vals[1], env), None
-    return scheme_eval(vals[2], env), None
+    	if vals[0] != scheme_false:
+    		return scheme_eval(vals[1], env), env
+    	return okay, env
+    if vals[0] != scheme_false:
+    	print(repr(vals[1]))
+    	print(repr(scheme_eval(vals[1], env)))
+    	return scheme_eval(vals[1], None), env
+    return scheme_eval(vals[2], None), env
 
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
@@ -485,7 +498,7 @@ def do_cond_form(vals, env):
             if len(rv) == 0:
             	return scheme_true, None
             if len(rv) > 1:
-            	rv = do_begin_form(rv, env)[0]
+            	rv = do_begin_form(rv, None)[0]
             	return scheme_eval(rv, None), env
             return scheme_eval(rv[0], None), env
     return okay, None
