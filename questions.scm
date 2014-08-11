@@ -109,9 +109,17 @@
 ;; A stream that computes all possible patterns, each of which contain at least
 ;; one OVER and one UNDER
 (define (patterns)
-  ; YOUR CODE HERE
-  the-empty-stream)
+(define stream (cons-stream () (interleave upattern opattern)))
 
+(define upattern (stream-map (lambda (lst) (append lst (cons 'under nil))) stream)  )
+
+(define opattern (stream-map (lambda (lst) (append lst (cons 'over nil))) stream)  )
+
+(stream-filter (lambda (lst) (and (member? 'under lst) (member? 'over lst))   )  stream  )
+
+
+)
+(display (patterns))
 ; Gets the first N items out of stream of patterns into a
 ; list and sees if items are valid patterns
 (define (test-pattern stream-pattern n)
