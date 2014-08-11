@@ -93,6 +93,7 @@
 ;; A stream that computes all possible patterns, each of which contain at least
 ;; one OVER and one UNDER
 <<<<<<< HEAD
+<<<<<<< HEAD
 (define (patterns)
 (define stream (cons-stream () (interleave upattern opattern)))
 
@@ -132,6 +133,8 @@
 (and (equal? (length pattern-lst) 8) (sol-contains-all lst pattern-lst))
 ; expect #t
 =======
+=======
+>>>>>>> parent of 493c26c... 1-22 except 21 done
 ; (define (patterns)
 
 ; (cons-stream
@@ -177,6 +180,9 @@
 ; ;; Checks pattern-list contains the first 8 patterns
 ; (and (equal? (length pattern-lst) 8) (sol-contains-all lst pattern-lst))
 ; ; expect #t
+<<<<<<< HEAD
+>>>>>>> parent of 493c26c... 1-22 except 21 done
+=======
 >>>>>>> parent of 493c26c... 1-22 except 21 done
 
 ; Problem 22
