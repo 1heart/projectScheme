@@ -9,7 +9,6 @@ from ucb import main, trace
 # Eval/Apply #
 ##############
 
-# @trace
 def scheme_eval(expr, env):
     """Evaluate Scheme expression EXPR in environment ENV. If ENV is None,
     simply returns EXPR as its value without further evaluation.
@@ -453,8 +452,8 @@ def do_if_form(vals, env):
     if vals[0] != scheme_false:
     	print(repr(vals[1]))
     	print(repr(scheme_eval(vals[1], env)))
-    	return scheme_eval(vals[1], None), env
-    return scheme_eval(vals[2], None), env
+    	return scheme_eval(vals[1], env), None
+    return scheme_eval(vals[2], env), None
 
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
