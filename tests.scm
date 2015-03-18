@@ -8,6 +8,143 @@
 
 ;;; *** Add more of your own here! ***
 
+(let ((x 42)) x 1 2)
+; expect 2
+
+;;; misc
+(define (if_function condition truething falsething)
+  (if condition truething falsething))
+(if_function true 2 3)
+; expect 2
+(if_function (> 3 2) (+ 3 2) (- 3 2))
+; expect 5
+(if)
+; expect Error
+
+;;; lambdas
+(define g 
+  (lambda () 
+    (lambda () 3)))
+; expect g
+((g))
+; expect 3
+(g)
+; expect (lambda () 3)
+(if (= ((g)) 3) true false)
+; expect #t
+
+(define h 
+  (lambda () 
+    (lambda () (and 6 3))))
+; expect h
+(= ((g)) ((h)))
+; expect #t
+;;; begin begins!! (in theaters soon!)
+(begin (g) 5)
+; expect 5
+
+;;; the begin rises!!
+(begin (g) #f 12)
+; expect 12
+(begin (g) 125 #f (badfibo 5) (/ 1 0))
+; expect Error
+
+;;; begin (doesn't) kill bane!!
+(begin ((h)))
+; expect 3
+(define bane
+  (lambda () (begin (and 5 1) (or (or 3 6) (or 11364 (/ 1 0))))))
+; expect bane
+(bane)
+; expect 3
+
+;;; bane dies to someone else! wow! what an ending!
+((bane))
+; expect Error
+
+;;; more lolological forms
+(if fdsa gaf)
+; expect Error
+(if (begin (+ 1 2) nil) (if 5 6 7) (/ 1 0))
+; expect 6
+(if #f #t #f)
+; expect #f
+(if #f 4)
+; expect okay
+
+(define x 135426535)
+; expect x
+(and x 9586)
+; expect 9586
+(or x 9586)
+; expect 135426535
+(or 'x 932)
+; expect x
+(and (if #f #t #f) (/ 1 0))
+; expect #f
+(or (begin #f (+ 1243 43)) (/ 1 0))
+; expect 1286
+
+
+
+; cond :)
+(define (badfibo num)
+  (cond ((= num 0) 0)
+        ((= num 1) 1)
+        (else (+ (badfibo (- num 1)) (badfibo (- num 2))))))
+; expect badfibo
+(badfibo 10)
+; expect 55
+(badfibo 1)
+; expect 1
+(badfibo)
+; expect Error
+
+(cond 5)
+; expect Error
+
+(cond (= 5 1) 2)
+; expect 1
+
+(cond ((= 1 64) 'ROFLMAO)
+      ((= 2 2) 'CRISIS)
+      ((= (/ 1 0) (/ 0 1)) 'AVERTED)
+      (else 'LOLOL))
+; expect crisis
+
+(cond ((= 1 42) 'man)
+      (else 'hunt))
+; expect hunt
+
+;;; let
+(let ((x 5)) (+ x 2))
+; expect 7
+(x)
+; expect Error
+(= (let ((x 42) (y 16)) (+ x y)) ((lambda (x y) (+ x y)) 42 16))
+; expect #t
+(let ((x 42)) x 1 2)
+; expect 2
+
+;;; MUclear
+;   (\_/)
+; (\(*_*)/) 
+;   c(")(")
+(define f (mu (x) (+ x y)))
+(define g (lambda (x y) (f (+ x x))))
+(g 1 5)
+; expect 7
+(f 1)
+; expect Error
+
+(define iloveyou (mu (so) (* very much so)))
+(define ily 
+  (lambda (much very) 
+    (iloveyou 
+      (if (= very much) 99999999 much))))
+(ily 9999 9999)
+; expect 9998000000019999
+; (exit)
 ;;; These are examples from several sections of "The Structure
 ;;; and Interpretation of Computer Programs" by Abelson and Sussman.
 
@@ -56,7 +193,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Move the following (exit) line to run additional tests. ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(exit)
+; (exit)
 
 
 ;;; 1.1.2

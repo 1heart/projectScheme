@@ -1,0 +1,121 @@
+; Name: Yixin Lin
+; Login: cs61a-dy
+
+;;;;;;;;;;;;
+;; Lab 14 ;;
+;;;;;;;;;;;;
+
+; Question 1
+
+; used the food-chain-v2 implementation for food-chain
+
+(fact (food-chain ?1 ?2)
+(eats ?1 ?2))
+
+(fact (food-chain ?creature1 ?creature2)
+      (eats ?creature1 ?creature3)
+      (food-chain ?creature3 ?creature2))
+
+(fact (eats shark big-fish))
+(fact (eats big-fish small-fish))
+(fact (eats domo kittens))
+(fact (eats kittens small-fish))
+(fact (eats zombie brains))
+
+(query (eats zombie brains))
+; expect Success!
+
+(query (eats domo zombie))
+; expect Failed.
+
+(query (eats zombie ?what))
+; expect Success! ; ?what: brains
+
+(query (eats shark big-fish))
+(query (food-chain ?what small-fish))
+(query (eats ?what small-fish))
+(query (eats ?what shark))
+(query (eats ?what zombies))
+
+
+
+; Question 2
+; Base Case
+(fact (interleave () ?lst2 ()))
+
+; YOUR CODE HERE
+
+(fact (interleave (?car1 . ?cdr1) ?lst2 (?car1 .  ?z  ) )
+	(interleave  ?lst2 ?cdr1 ?z)
+
+
+
+)
+
+
+(query (interleave (1 2 3 4) (5 6 7 8) ?lst))
+; expect Success! ; lst: (1 5 2 6 3 7 4 8)
+
+(query (interleave (1) (2 3 4 5 6 7 8 9) ?lst))
+; expect Success! ; lst: (1 2)
+
+(query (interleave (1 3 5 7 9) ?evens (1 2 3 4 5 6 7 8 9)))
+; expect Success! ; evens: (2 4 6 8)
+
+
+; Question 3
+
+(fact (last-element (?x) ?x))
+
+(fact (last-element (?car . ?cdr) ?x)
+	(last-element ?cdr ?x)
+)
+
+(query (last-element (a b c) c))
+; expect Success!
+
+(query (last-element (3) ?x))
+; expect Success! ; x: 3
+
+(query (last-element (1 2 3) ?x))
+; expect Success! ; x: 3
+
+(query (last-element (2 ?x) 3))
+; expect Success! ; x: 3
+
+
+; Question 4
+
+(fact (firsts () ()))
+
+(fact (firsts ((?car1 . ?cdr1) . ?cdr) (?car1 . ?z))
+
+	(firsts ?cdr ?z)
+
+)
+
+
+(query (firsts ((1 2 3 4) (2 3 4 5) (1 2 3 4) (1 2 3 2)) ?x))
+; expect Success! ; x: (1 2 1 1)
+
+(query (firsts ((2 3 4) (3 4 5) (2 3 4) (2 3 2)) ?y))
+; expect Success! ; y: (2 3 2 2)
+
+
+; Question 5
+
+(fact (rests () ()))
+
+(fact (rests ((?car1 . ?cdr1) . ?cdr) (?cdr1 . ?z))
+
+	(rests ?cdr ?z)
+
+)
+
+
+(query (rests ((1 2 3 4) (2 3 4 5) (1 2 3 4) (1 2 3 2)) ?x))
+; expect Success! ; x: ((2 3 4) (3 4 5) (2 3 4) (2 3 2))
+
+(query (rests ((2 3 4) (3 4 5) (2 3 4) (2 3 2)) ?y))
+; expect Success! ; y: ((3 4) (4 5) (3 4) (3 2))
+

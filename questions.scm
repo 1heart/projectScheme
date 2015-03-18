@@ -1,4 +1,5 @@
 ; Some utility functions that you may find useful.
+
 (define (map proc items)
   (if (null? items)
       nil
@@ -26,6 +27,20 @@
                                      (stream-cdr stream))))
         (else (stream-filter pred (stream-cdr stream)))))
 
+; display-stream prints out n elements of a stream s. If there is less than n
+; elements in the stream, then it will only print the elements in the stream and
+; end.
+(define (display-stream s n)
+  (define (display-line x)
+    (display x)
+    (newline))
+  (define (stream-for-each proc s n)
+    (cond ((stream-null? s) 'done)
+          ((= n 0) '___done)
+          (else (begin (proc (stream-car s))
+                (stream-for-each proc (stream-cdr s) (- n 1))))))
+  (stream-for-each display-line s n))
+
 (define (interleave s1 s2)
   (if (stream-null? s1)
       s2
@@ -46,9 +61,16 @@
 
 ;; Merge two lists LIST1 and LIST2 according to COMP and return
 ;; the merged lists.
+
 (define (merge comp list1 list2)
-  ; YOUR CODE HERE
-  nil)
+  (cond 
+    ((and (null? list1) (null? list2)) nil)
+    ((null? list1) list2)
+    ((null? list2) list1)
+    ((comp (car list1) (car list2)) 
+      (cons (car list1) (merge comp (cdr list1) list2))  )
+    (else (cons (car list2) (merge comp list1 (cdr list2))))
+    ))
 
 (merge < '(1 5 7 9) '(4 8 10))
 ; expect (1 4 5 7 8 9 10)
@@ -82,14 +104,21 @@
 ; expect ((4 0) (3 2 1) (3 2 0) (3 2) (1 1) (1) (0))
 
 
-; Problem 21
+; ; Problem 21
 
 ;; A stream that computes all possible patterns, each of which contain at least
 ;; one OVER and one UNDER
 (define (patterns)
-  ; YOUR CODE HERE
-  the-empty-stream)
+(define stream (cons-stream () (interleave upattern opattern)))
 
+(define upattern (stream-map (lambda (lst) (append lst (cons 'under nil))) stream)  )
+
+(define opattern (stream-map (lambda (lst) (append lst (cons 'over nil))) stream)  )
+
+(stream-filter (lambda (lst) (and (member? 'under lst) (member? 'over lst))   )  stream  )
+
+
+)
 ; Gets the first N items out of stream of patterns into a
 ; list and sees if items are valid patterns
 (define (test-pattern stream-pattern n)
@@ -107,7 +136,7 @@
         (and (member? (car ss1) ss2)
           (sol-contains-all (cdr ss1) ss2))))
 
-;; Gets first 8 items out of patterns. Stops if any item in patterns is not valid.
+; Gets first 8 items out of patterns. Stops if any item in patterns is not valid.
 (define pattern-lst (test-pattern (patterns) 8))
 
 ;; Create a list that contains patterns that do happen in the first 8 items of pattern
@@ -151,20 +180,35 @@
                                             (make-tree 3 nil)))
                               (make-tree 4 nil))))))
 
+
+(define (flatten deeplst) 
+  (cond
+    ((null? deeplst) ())
+    ((pair? (car deeplst)) (append (flatten (car deeplst))  (flatten (cdr deeplst)) ))
+    (else (cons (car deeplst) (flatten (cdr deeplst))))))
+
+
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
-(define (tree-sums tree)
-  ; YOUR CODE HERE
-  nil)
 
-(tree-sums tree)
-; expect (20 19 13 16 11)
+(define (tree-sums tree)  
+  (cond
+    ((null? (children tree))  (list (entry tree)))
+    (else
+      (define ent (entry tree))
+      (define (app lst) (map (lambda (x) (+ x ent)) lst))
+    (define r (map tree-sums (children tree)))
+    (define rv (flatten r))
+    (app rv))))
+
+; (tree-sums tree)
+; ; expect (20 19 13 16 11)
 
 
 
-; Problem 23 (optional)
+; ; Problem 23 (optional)
 
-; Draw the hax image using turtle graphics.
-(define (hax d k)
-  ; YOUR CODE HERE
-  nil)
+; ; Draw the hax image using turtle graphics.
+; (define (hax d k)
+;   ; YOUR CODE HERE
+;   nil)

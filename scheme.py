@@ -9,7 +9,7 @@ from ucb import main, trace
 # Eval/Apply #
 ##############
 
-
+# @trace
 def scheme_eval(expr, env):
     """Evaluate Scheme expression EXPR in environment ENV. If ENV is None,
     simply returns EXPR as its value without further evaluation.
@@ -103,10 +103,10 @@ class Frame:
             symbol = intern(symbol)
         "*** YOUR CODE HERE ***"
         if symbol in self.bindings:
-        	return self.bindings[symbol]
+          return self.bindings[symbol]
         else:
-        	if self.parent:
-        		return self.parent.lookup(symbol)
+          if self.parent:
+            return self.parent.lookup(symbol)
         raise SchemeError("unknown identifier: {0}".format(str(symbol)))
 
 
@@ -129,7 +129,14 @@ class Frame:
         <{a: 1, b: 2, c: 3} -> <Global Frame>>
         """
         frame = Frame(self)
+
         "*** YOUR CODE HERE ***"
+
+        while len(formals) != 0 and len(vals) != 0:
+          frame.bindings[formals.first] = vals.first
+          formals, vals = formals.second, vals.second
+        if len(formals) != 0 or len(vals) != 0:
+          raise SchemeError("Wrong number of parameters and arguments")
         return frame
 
     def define(self, sym, val):
@@ -154,6 +161,8 @@ class Stream(SchemeValue):
         self.first = first
         self._compute_rest = rest
         self.env = env
+    def _symbol(self):
+      return 'stream'
 
     def stream_car(self):
         """Gets the first item of a stream"""
@@ -165,6 +174,8 @@ class Stream(SchemeValue):
         """
         if self._compute_rest is not None:
             "*** YOUR CODE HERE ***"
+            self.rest = scheme_eval(self._compute_rest.first, self.env)
+            self._compute_rest = None
         return self.rest
 
     def __str__(self):
@@ -184,6 +195,8 @@ def do_cons_stream_form(vals, env):
     stream"""
     check_form(vals, 2, 2)
     "*** YOUR CODE HERE ***"
+    f = scheme_eval(vals.first, env)
+    return Stream(f, vals.second, env), env
 
 ##############
 # Procedures #
@@ -265,6 +278,10 @@ class LambdaProcedure(Procedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
+            f = self.env.make_call_frame(self.formals, args) 
+            rv = scheme_eval(self.body, f)
+            return rv, None
+
 
 class MuProcedure(LambdaProcedure):
     """A procedure defined by a mu expression, which has dynamic scope.
@@ -287,6 +304,10 @@ class MuProcedure(LambdaProcedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
+            f = env.make_call_frame(self.formals, args)
+            rv = scheme_eval(self.body, f)
+            return rv, None
+
 
 # Call-by-name (nu) extension.
 class NuProcedure(LambdaProcedure):
@@ -325,6 +346,14 @@ def do_define_form(vals, env):
         return target, None
     elif scheme_pairp(target):
         "*** YOUR CODE HERE ***"
+        name = vals[0].first
+        if name.symbolp() == scheme_false:
+          raise SchemeError("bad argument to define")
+        target = vals[0].second
+        value = vals.second
+        rv = Pair(target, value)
+        env.define(name, do_lambda_form(rv, env)[0])
+        return name, None
     else:
         raise SchemeError("bad argument to define")
 
@@ -332,6 +361,7 @@ def do_quote_form(vals, env):
     """Evaluate a quote form with parameters VALS. ENV is ignored."""
     check_form(vals, 1, 1)
     "*** YOUR CODE HERE ***"
+    return vals.first, None
 
 
 def do_begin_form(vals, env):
@@ -340,6 +370,9 @@ def do_begin_form(vals, env):
     if scheme_nullp(vals):
         return okay, None
     "*** YOUR CODE HERE ***"
+    for i in range(len(vals)-1):
+      scheme_eval(vals[i], env)
+    return (vals[len(vals)-1]), env
 
 def do_lambda_form(vals, env, function_type=LambdaProcedure):
     """Evaluate a lambda form with formals VALS[0] and body VALS.second
@@ -349,6 +382,10 @@ def do_lambda_form(vals, env, function_type=LambdaProcedure):
     formals = vals[0]
     check_formals(formals)
     "*** YOUR CODE HERE ***"
+    body = vals.second.first
+    if len(vals.second) > 1:
+      return function_type(formals, Pair('begin', (vals.second)), env), env
+    return function_type(formals, body, env), env
 
 def do_mu_form(vals, env):
     """Evaluate a mu (dynamically scoped lambda) form with formals VALS[0]
@@ -379,6 +416,14 @@ def do_let_form(vals, env):
         values = Pair(val, values)
     check_formals(names)
     "*** YOUR CODE HERE ***"
+    prcdr = do_lambda_form(Pair(names, exprs), env)[0] ##lambda form
+    curr = []##we're going to evaluate each argument and put it into this list
+    for value in values:
+      curr.append(scheme_eval(value, env))
+    new = nil##you gotta reverse curr :(
+    for i in curr[::-1]:
+      new = Pair(i, new)
+    return prcdr.apply(new, env)
 
 
 #########################
@@ -389,15 +434,36 @@ def do_if_form(vals, env):
     """Evaluate if form with parameters VALS in environment ENV."""
     check_form(vals, 2, 3)
     "*** YOUR CODE HERE ***"
+    if len(vals) == 2:
+      if scheme_eval(vals[0], env) != scheme_false:
+        return scheme_eval(vals[1], env), None
+      return okay, None
+    if scheme_eval(vals[0], env) != scheme_false:
+      return scheme_eval(vals[1], env), None
+    return scheme_eval(vals[2], env), None
 
 def do_and_form(vals, env):
     """Evaluate short-circuited and with parameters VALS in environment ENV."""
     "*** YOUR CODE HERE ***"
+    last = scheme_true
+    while vals != nil:
+      last = scheme_eval(vals.first, env)
+      if last == scheme_false:
+        return scheme_false, None
+      vals = vals.second
+    return last, None
 
 
 def do_or_form(vals, env):
     """Evaluate short-circuited or with parameters VALS in environment ENV."""
     "*** YOUR CODE HERE ***"
+    last = scheme_false
+    while vals != nil:
+      last = scheme_eval(vals.first, env)
+      if last != scheme_false:
+        return last, None
+      vals = vals.second
+    return last, None
 
 def do_cond_form(vals, env):
     """Evaluate cond form with parameters VALS in environment ENV."""
@@ -414,6 +480,13 @@ def do_cond_form(vals, env):
             test = scheme_eval(clause.first, env)
         if test:
             "*** YOUR CODE HERE ***"
+            rv = clause.second
+            if len(rv) == 0:
+              return test, env
+            if len(rv) > 1:
+              rv = do_begin_form(rv, env)[0]
+              return scheme_eval(rv, None), env
+            return scheme_eval(rv[0], None), env
     return okay, None
 
 # Collected symbols with significance to the interpreter
@@ -456,7 +529,6 @@ SPECIAL_FORMS = {
 
 # Utility methods for checking the structure of Scheme programs
 
-# @trace
 def check_form(expr, min, max = None):
     """Check EXPR (default SELF.expr) is a proper list whose length is
     at least MIN and no more than MAX (default: no maximum). Raises
@@ -477,6 +549,14 @@ def check_formals(formals):
     >>> check_formals(read_line("(a b c)"))
     """
     "*** YOUR CODE HERE ***"
+    checker = []
+    for i in range(len(formals)):
+        if formals[i] in checker:
+            raise SchemeError('symbol used twice')
+        checker.append(formals[i])
+        if not scheme_symbolp(formals[i]):
+            raise SchemeError('not a symbol')
+    return formals
 
 ################
 # Input/Output #
