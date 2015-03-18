@@ -9,7 +9,6 @@ from ucb import main, trace
 # Eval/Apply #
 ##############
 
-# @trace
 def scheme_eval(expr, env):
     """Evaluate Scheme expression EXPR in environment ENV. If ENV is None,
     simply returns EXPR as its value without further evaluation.
@@ -133,10 +132,17 @@ class Frame:
         "*** YOUR CODE HERE ***"
 
         while len(formals) != 0 and len(vals) != 0:
+<<<<<<< HEAD
           frame.bindings[formals.first] = vals.first
           formals, vals = formals.second, vals.second
         if len(formals) != 0 or len(vals) != 0:
           raise SchemeError("Wrong number of parameters and arguments")
+=======
+        	frame.bindings[formals.first] = vals.first
+        	formals, vals = formals.second, vals.second
+        if len(formals) != 0 or len(vals) != 0:
+        	raise SchemeError("Wrong number of parameters and arguments")
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
         return frame
 
     def define(self, sym, val):
@@ -162,7 +168,11 @@ class Stream(SchemeValue):
         self._compute_rest = rest
         self.env = env
     def _symbol(self):
+<<<<<<< HEAD
       return 'stream'
+=======
+    	return 'stream'
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
 
     def stream_car(self):
         """Gets the first item of a stream"""
@@ -304,7 +314,13 @@ class MuProcedure(LambdaProcedure):
             "*** YOUR CODE HERE ***"
         else:
             "*** YOUR CODE HERE ***"
+<<<<<<< HEAD
             f = env.make_call_frame(self.formals, args)
+=======
+            print(env)
+            f = env.make_call_frame(self.formals, args)
+            print(f)
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
             rv = scheme_eval(self.body, f)
             return rv, None
 
@@ -348,7 +364,11 @@ def do_define_form(vals, env):
         "*** YOUR CODE HERE ***"
         name = vals[0].first
         if name.symbolp() == scheme_false:
+<<<<<<< HEAD
           raise SchemeError("bad argument to define")
+=======
+        	raise SchemeError("bad argument to define")
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
         target = vals[0].second
         value = vals.second
         rv = Pair(target, value)
@@ -361,7 +381,11 @@ def do_quote_form(vals, env):
     """Evaluate a quote form with parameters VALS. ENV is ignored."""
     check_form(vals, 1, 1)
     "*** YOUR CODE HERE ***"
+<<<<<<< HEAD
     return vals.first, None
+=======
+    return vals.first, env.parent
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
 
 
 def do_begin_form(vals, env):
@@ -371,7 +395,11 @@ def do_begin_form(vals, env):
         return okay, None
     "*** YOUR CODE HERE ***"
     for i in range(len(vals)-1):
+<<<<<<< HEAD
       scheme_eval(vals[i], env)
+=======
+    	scheme_eval(vals[i], env)
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
     return (vals[len(vals)-1]), env
 
 def do_lambda_form(vals, env, function_type=LambdaProcedure):
@@ -383,8 +411,14 @@ def do_lambda_form(vals, env, function_type=LambdaProcedure):
     check_formals(formals)
     "*** YOUR CODE HERE ***"
     body = vals.second.first
+<<<<<<< HEAD
     if len(vals.second) > 1:
       return function_type(formals, Pair('begin', (vals.second)), env), env
+=======
+    # print(vals.second)
+    if len(vals.second) > 1:
+    	return function_type(formals, Pair('begin', (vals.second)), env), env
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
     return function_type(formals, body, env), env
 
 def do_mu_form(vals, env):
@@ -419,11 +453,28 @@ def do_let_form(vals, env):
     prcdr = do_lambda_form(Pair(names, exprs), env)[0] ##lambda form
     curr = []##we're going to evaluate each argument and put it into this list
     for value in values:
+<<<<<<< HEAD
       curr.append(scheme_eval(value, env))
     new = nil##you gotta reverse curr :(
     for i in curr[::-1]:
       new = Pair(i, new)
     return prcdr.apply(new, env)
+=======
+    	curr.append(scheme_eval(value, env))
+    new = nil##you gotta reverse curr :(
+    for i in curr[::-1]:
+    	new = Pair(i, new)
+    return prcdr.apply(new, env)
+
+
+
+    # print('LOLOLOL',names, values)
+    # print(vals.second)
+    # the_procedure = do_lambda_form(Pair(names, vals.second), env)
+    # f, e = the_procedure[0], the_procedure[1]
+    # print(f, e)
+    # return f.apply(values, e)
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
 
 
 #########################
@@ -435,11 +486,21 @@ def do_if_form(vals, env):
     check_form(vals, 2, 3)
     "*** YOUR CODE HERE ***"
     if len(vals) == 2:
+<<<<<<< HEAD
       if scheme_eval(vals[0], env) != scheme_false:
         return scheme_eval(vals[1], env), None
       return okay, None
     if scheme_eval(vals[0], env) != scheme_false:
       return scheme_eval(vals[1], env), None
+=======
+    	if vals[0] != scheme_false:
+    		return scheme_eval(vals[1], env), env
+    	return okay, env
+    if vals[0] != scheme_false:
+    	print(repr(vals[1]))
+    	print(repr(scheme_eval(vals[1], env)))
+    	return scheme_eval(vals[1], env), None
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
     return scheme_eval(vals[2], env), None
 
 def do_and_form(vals, env):
@@ -447,10 +508,17 @@ def do_and_form(vals, env):
     "*** YOUR CODE HERE ***"
     last = scheme_true
     while vals != nil:
+<<<<<<< HEAD
       last = scheme_eval(vals.first, env)
       if last == scheme_false:
         return scheme_false, None
       vals = vals.second
+=======
+    	last = scheme_eval(vals.first, env)
+    	if last == scheme_false:
+    		return scheme_false, None
+    	vals = vals.second
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
     return last, None
 
 
@@ -459,10 +527,17 @@ def do_or_form(vals, env):
     "*** YOUR CODE HERE ***"
     last = scheme_false
     while vals != nil:
+<<<<<<< HEAD
       last = scheme_eval(vals.first, env)
       if last != scheme_false:
         return last, None
       vals = vals.second
+=======
+    	last = scheme_eval(vals.first, env)
+    	if last != scheme_false:
+    		return last, None
+    	vals = vals.second
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
     return last, None
 
 def do_cond_form(vals, env):
@@ -482,10 +557,17 @@ def do_cond_form(vals, env):
             "*** YOUR CODE HERE ***"
             rv = clause.second
             if len(rv) == 0:
+<<<<<<< HEAD
               return test, env
             if len(rv) > 1:
               rv = do_begin_form(rv, env)[0]
               return scheme_eval(rv, None), env
+=======
+            	return scheme_true, None
+            if len(rv) > 1:
+            	rv = do_begin_form(rv, None)[0]
+            	return scheme_eval(rv, None), env
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
             return scheme_eval(rv[0], None), env
     return okay, None
 

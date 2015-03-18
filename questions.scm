@@ -190,6 +190,19 @@
 
 ;; Takes a TREE of numbers and outputs a list of sums from following each
 ;; possible path from root to leaf.
+<<<<<<< HEAD
+=======
+
+(define (tree-sums tree)  
+  (cond
+    ((null? (children tree))  (list (entry tree)))
+    (else
+      (define ent (entry tree))
+      (define (app lst) (map (lambda (x) (+ x ent)) lst))
+    (define r (map tree-sums (children tree)))
+    (define rv (flatten r))
+    (app rv))))
+>>>>>>> 9c633ca7b1e350e5eeebd1d107a588a68f9b3b93
 
 (define (tree-sums tree)  
   (cond
